@@ -1,16 +1,25 @@
-# OpenTofu AWS Module Template
+# OpenTofu AWS Log Group Queries
 
-Template repository for creating OpenTofu AWS modules.
+Creates AWS CloudWatch Log Insights query definitions across specified log groups.
 
 ## Usage
 
 ```hcl
-module "example" {
-  source = "git::https://github.com/im5tu/opentofu-aws-<name>.git?ref=main"
+module "log_queries" {
+  source = "git::https://github.com/im5tu/opentofu-aws-log-group-queries.git?ref=main"
 
-  tags = {
-    Environment = "production"
+  log_groups = [
+    "/aws/lambda/my-api",
+    "/aws/lambda/my-worker"
+  ]
+
+  queries = {
+    "Error Count"   = "filter @message like /ERROR/ | stats count(*) as error_count by bin(1h)"
+    "Recent Errors" = "filter @message like /ERROR/ | sort @timestamp desc | limit 100"
+    "Warning Logs"  = "filter @message like /WARN/ | sort @timestamp desc | limit 50"
   }
+
+  prefix = "MyApp"  # Optional: creates queries under "MyApp/" folder
 }
 ```
 
@@ -25,12 +34,16 @@ module "example" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| tags | Tags to apply to resources | `map(string)` | `{}` | no |
+| log_groups | The log groups that you want the queries to search over | `list(string)` | n/a | yes |
+| queries | The queries that you wish to have available in AWS CloudWatch Log Insights | `map(string)` | n/a | yes |
+| prefix | A folder structure prefix that's prepended to each query | `string` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| query_definition_ids | Map of query names to CloudWatch query definition IDs |
+| query_definition_arns | Map of query names to CloudWatch query definition ARNs |
 
 ## Development
 
