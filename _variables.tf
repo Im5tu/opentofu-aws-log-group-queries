@@ -7,6 +7,11 @@ variable "prefix" {
 variable "log_groups" {
   description = "The log groups that you want the queries to search over"
   type        = list(string)
+
+  validation {
+    condition     = length(var.log_groups) > 0
+    error_message = "log_groups must contain at least one log group name."
+  }
 }
 
 variable "queries" {
