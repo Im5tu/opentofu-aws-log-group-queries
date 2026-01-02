@@ -10,6 +10,11 @@ variable "log_groups" {
 }
 
 variable "queries" {
-  description = "The queries that you wish to have available in AWS Cloudwatch Log Insights"
+  description = "The queries that you wish to have available in AWS CloudWatch Log Insights"
   type        = map(string)
+
+  validation {
+    condition     = length(var.queries) > 0
+    error_message = "At least one query must be specified."
+  }
 }
