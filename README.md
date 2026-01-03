@@ -6,7 +6,7 @@ Creates AWS CloudWatch Log Insights query definitions across specified log group
 
 ```hcl
 module "log_queries" {
-  source = "git::https://github.com/im5tu/opentofu-aws-log-group-queries.git?ref=main"
+  source = "git::https://github.com/im5tu/opentofu-aws-log-group-queries.git?ref=35cb780c3bc845d9912337433757206a66d3d647"
 
   log_groups = [
     "/aws/lambda/my-api",
